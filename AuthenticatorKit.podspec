@@ -91,7 +91,7 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "AuthenticatorKit", "AuthenticatorKit/AuthenticatorKit/AuthenticatorKit/Authenticator/*.{h,m}"
+  spec.source_files  = "AuthenticatorKit", "AuthenticatorKit/AuthenticatorKit/Authenticator/*.{h,m}"
   spec.exclude_files = "AuthenticatorKit/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"
