@@ -1,0 +1,6 @@
+framework module Pods_AuthenticatorKit {
+  umbrella header "Pods-AuthenticatorKit-umbrella.h"
+
+  export *
+  module * { export * }
+}
