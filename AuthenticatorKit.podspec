@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "AuthenticatorKit"
-  spec.version      = "0.0.3"
+  spec.version      = "0.0.4"
   spec.summary      = "A lib work with Authenticator."
 
   # This description is used to generate tags and improve search results.
@@ -91,8 +91,8 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "Classes", "AuthenticatorKit/AuthenticatorKit/Authenticator/*.{h,m}"
-  spec.exclude_files = "Classes/Exclude"
+  spec.source_files  = "AuthenticatorKit", "AuthenticatorKit/AuthenticatorKit/Authenticator/*.{h,m}"
+  spec.exclude_files = "AuthenticatorKit/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"
 
