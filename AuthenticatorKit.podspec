@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "AuthenticatorKit"
-  spec.version      = "0.0.8"
+  spec.version      = "0.0.9"
   spec.summary      = "A lib work with Authenticator."
 
   # This description is used to generate tags and improve search results.
@@ -64,8 +64,8 @@ Pod::Spec.new do |spec|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  # spec.platform     = :ios
-  spec.platform     = :ios, "11.0"
+  spec.platform     = :ios
+  # spec.platform     = :ios, "11.0"
 
   #  When using multiple platforms
   spec.ios.deployment_target = "11.0"
