@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,12 +38,42 @@ typedef NS_ENUM(NSUInteger, ActionType) {
 
 + (instancetype)shareInstance;
 
-
+/// Decentralized registration
 - (void)decentralizedRegisterWithUserName:(NSString *)userName callback:(void (^)(BOOL success, NSError *error))callback;
 
+/// Decentralized login
+- (void)decentralizedLoginCallback:(void (^)(BOOL success, NSError *error))callback;
 
+/// Get decentralized login status
+- (void)getDecentralizedLoginStatusCallback:(void (^)(NSInteger status, NSError *error))callback;
 
+/// Apply Claim
+- (void)applyClaimWithOntid:(NSString *)ontid name:(NSString *)name age:(NSInteger)age callback:(void (^)(BOOL success, NSError *error))callback;
+
+/// Get Claim
+- (void)getClaimCallback:(void (^)(BOOL success, NSError *error))callback;
+
+/// Authorize Claim
+- (void)authorizeClaimCallback:(void (^)(BOOL success, NSError *error))callback;
+
+/// Centralized registration
+- (void)centralizedRegisterWithUserName:(NSString *)userName password:(NSString *)password callback:(void (^)(BOOL success, NSString *ontid, NSError *error))callback;
+
+/// Centralized login
+- (void)centralizedLoginWithUserName:(NSString *)userName password:(NSString *)password callback:(void (^)(BOOL success, NSString *ontid, NSError *error))callback;
+
+/// Centralized add Owner
+- (void)centralizedAddOwnerWithOntid:(NSString *)ontid callback:(void (^)(BOOL success, NSError *error))callback;
+
+/// Centralized login by Owner
+- (void)centralizedLoginByOwnerCallback:(void (^)(BOOL success, NSError *error))callback;
+
+/// Get centralized login status
+- (void)getCentralizedLoginStatusCallback:(void (^)(NSInteger status, NSError *error))callback;
+
+/// Authenticator 
 - (void)handelURL:(NSURL *)url;
+- (void)handelURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts;
 
 
 @end

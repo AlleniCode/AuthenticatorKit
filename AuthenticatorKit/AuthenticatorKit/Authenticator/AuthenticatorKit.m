@@ -19,7 +19,8 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
 
 @interface AuthenticatorKit ()
 
-@property (nonatomic, strong) NSString *appId;
+@property (nonatomic, strong) NSString *decentralizedLoginAppId;
+@property (nonatomic, strong) NSString *centralizedLoginAppId;
 
 @end
 
@@ -143,6 +144,7 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
     }
 }
 
+/// Decentralized registration
 - (void)decentralizedRegisterWithUserName:(NSString *)userName callback:(void (^)(BOOL success, NSError *error))callback {
     NSString *url = @"https://prod.microservice.ont.io/addon-server/api/v1/account/register";
     NSDictionary *params = @{@"userName": userName};
@@ -164,10 +166,203 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
     }];
 }
 
+/// Decentralized login
+- (void)decentralizedLoginCallback:(void (^)(BOOL success, NSError *error))callback {
+    NSString *url = @"https://prod.microservice.ont.io/addon-server/api/v1/account/login";
+    
+    [AuthenticatorKit requestWithType:RequestTypePOST URLString:url headers:@{} parameters:@{} result:^(id data, NSError *error) {
+        if (!error) {
+            NSDictionary *result = (NSDictionary *)data;
+            NSDictionary *qrCode = result[@"result"][@"qrcode"];
+            self.decentralizedLoginAppId = result[@"result"][@"appId"];
+            [AuthenticatorKit openAuthenticatorWithType:ActionTypeDecentralizedLogin qrCode:qrCode callback:^(BOOL success, NSError *error) {
+                callback(success, error);
+            }];
+        } else {
+            callback(NO, error);
+        }
+    }];
+}
 
-/// 查询登录状态
+/// Get decentralized login status
 - (void)getDecentralizedLoginStatusCallback:(void (^)(NSInteger status, NSError *error))callback {
-    NSString *url = [NSString stringWithFormat:@"https://prod.microservice.ont.io/addon-server/api/v1/account/login/result/%@", self.appId];
+    NSString *url = [NSString stringWithFormat:@"https://prod.microservice.ont.io/addon-server/api/v1/account/login/result/%@", self.decentralizedLoginAppId];
+    
+    [AuthenticatorKit requestWithType:RequestTypeGET URLString:url headers:@{} parameters:@{} result:^(id data, NSError *error) {
+        if (!error) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *result = (NSDictionary *)data;
+                NSInteger status = [result[@"result"][@"result"] integerValue];
+                callback(status, nil);
+            } else {
+                callback(-1, nil);
+            }
+        } else {
+            callback(-1, error);
+        }
+    }];
+}
+
+/// Apply Claim
+- (void)applyClaimWithOntid:(NSString *)ontid name:(NSString *)name age:(NSInteger)age callback:(void (^)(BOOL success, NSError *error))callback {
+    NSString *url = @"http://18.141.44.15:7879/api/v1/ta/claim";
+    NSDictionary *params = @{@"name": name,
+                             @"age": @(age),
+                             @"answer": @(YES),
+                             @"ontid": ontid,
+    };
+    
+    [AuthenticatorKit requestWithType:RequestTypePOST URLString:url headers:@{} parameters:params result:^(id data, NSError *error) {
+        if (!error) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *result = (NSDictionary *)data;
+                NSString *success = result[@"result"];
+                if ([success isEqualToString:@"SUCCESS"]) {
+                    callback(YES, nil);
+                } else {
+                    callback(NO, nil);
+                }
+            } else {
+                callback(NO, nil);
+            }
+        } else {
+            callback(NO, error);
+        }
+    }];
+}
+
+/// Get Claim
+- (void)getClaimCallback:(void (^)(BOOL success, NSError *error))callback {
+    NSString *url = @"http://18.141.44.15:7879/api/v1/ta/claim";
+    
+    [AuthenticatorKit requestWithType:RequestTypeGET URLString:url headers:@{} parameters:@{} result:^(id data, NSError *error) {
+        if (!error) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *result = (NSDictionary *)data;
+                NSDictionary *qrCode = result[@"result"];
+                [AuthenticatorKit openAuthenticatorWithType:ActionTypeGetClaim qrCode:qrCode callback:^(BOOL success, NSError *error) {
+                    callback(success, error);
+                }];
+            } else {
+                callback(NO, nil);
+            }
+        } else {
+            callback(NO, error);
+        }
+    }];
+}
+
+/// Authorize Claim
+- (void)authorizeClaimCallback:(void (^)(BOOL success, NSError *error))callback {
+    NSString *url = @"http://18.141.44.15:7878/api/v1/app/claim";
+    
+    [AuthenticatorKit requestWithType:RequestTypePOST URLString:url headers:@{} parameters:@{} result:^(id data, NSError *error) {
+        if (!error) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *result = (NSDictionary *)data;
+                NSDictionary *qrCode = result[@"result"];
+                [AuthenticatorKit openAuthenticatorWithType:ActionTypeAuthorizeClaim qrCode:qrCode callback:^(BOOL success, NSError *error) {
+                    callback(success, error);
+                }];
+            } else {
+                callback(NO, nil);
+            }
+        } else {
+            callback(NO, error);
+        }
+    }];
+}
+
+/// Centralized registration
+- (void)centralizedRegisterWithUserName:(NSString *)userName password:(NSString *)password callback:(void (^)(BOOL success, NSString *ontid, NSError *error))callback {
+    NSString *url = @"http://18.141.44.15:7878/api/v2/app/register";
+    NSDictionary *params = @{@"userName": userName,
+                             @"password": password
+    };
+    
+    [AuthenticatorKit requestWithType:RequestTypePOST URLString:url headers:@{} parameters:params result:^(id data, NSError *error) {
+        if (!error) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *result = (NSDictionary *)data;
+                NSString *ontid = result[@"result"][@"ontid"];
+                callback(YES, ontid, error);
+            } else {
+                callback(NO, nil, nil);
+            }
+        } else {
+            callback(NO, nil, error);
+        }
+    }];
+}
+
+/// Centralized login
+- (void)centralizedLoginWithUserName:(NSString *)userName password:(NSString *)password callback:(void (^)(BOOL success, NSString *ontid, NSError *error))callback {
+    NSString *url = @"http://18.141.44.15:7878/api/v2/app/login";
+    NSDictionary *params = @{@"userName": userName,
+                             @"password": password
+    };
+    
+    [AuthenticatorKit requestWithType:RequestTypePOST URLString:url headers:@{} parameters:params result:^(id data, NSError *error) {
+        if (!error) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *result = (NSDictionary *)data;
+                NSString *ontid = result[@"result"][@"ontid"];
+                callback(YES, ontid, error);
+            } else {
+                callback(NO, nil, nil);
+            }
+        } else {
+            callback(NO, nil, error);
+        }
+    }];
+}
+
+/// Centralized add Owner
+- (void)centralizedAddOwnerWithOntid:(NSString *)ontid callback:(void (^)(BOOL success, NSError *error))callback {
+    NSString *url = [NSString stringWithFormat:@"http://18.141.44.15:7878/api/v2/app/add-owner/%@", ontid];
+    
+    [AuthenticatorKit requestWithType:RequestTypePOST URLString:url headers:@{} parameters:@{} result:^(id data, NSError *error) {
+        if (!error) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *result = (NSDictionary *)data;
+                NSDictionary *qrCode = result[@"result"];
+                [AuthenticatorKit openAuthenticatorWithType:ActionTypeCentralizedAddOwner qrCode:qrCode callback:^(BOOL success, NSError *error) {
+                    callback(success, error);
+                }];
+            } else {
+                callback(NO, nil);
+            }
+        } else {
+            callback(NO, error);
+        }
+    }];
+}
+
+/// Centralized login by Owner
+- (void)centralizedLoginByOwnerCallback:(void (^)(BOOL success, NSError *error))callback {
+    NSString *url = @"http://18.141.44.15:7878/api/v2/app/login/owner";
+    
+    [AuthenticatorKit requestWithType:RequestTypePOST URLString:url headers:@{} parameters:@{} result:^(id data, NSError *error) {
+        if (!error) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *result = (NSDictionary *)data;
+                NSDictionary *qrCode = result[@"result"][@"qrCode"];
+                self.centralizedLoginAppId = result[@"result"][@"id"];
+                [AuthenticatorKit openAuthenticatorWithType:ActionTypeCentralizedLoginByOwner qrCode:qrCode callback:^(BOOL success, NSError *error) {
+                    callback(success, error);
+                }];
+            } else {
+                callback(NO, nil);
+            }
+        } else {
+            callback(NO, error);
+        }
+    }];
+}
+
+/// Get centralized login status
+- (void)getCentralizedLoginStatusCallback:(void (^)(NSInteger status, NSError *error))callback {
+    NSString *url = [NSString stringWithFormat:@"http://18.141.44.15:7878/api/v2/app/login/result/%@", self.centralizedLoginAppId];
     
     [AuthenticatorKit requestWithType:RequestTypeGET URLString:url headers:@{} parameters:@{} result:^(id data, NSError *error) {
         if (!error) {
@@ -215,6 +410,12 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
             }
         }
     }
+}
+
+- (void)handelURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts {
+    UIOpenURLContext *context = URLContexts.allObjects.firstObject;
+    NSURL *url = context.URL;
+    [self handelURL:url];
 }
 
 @end
