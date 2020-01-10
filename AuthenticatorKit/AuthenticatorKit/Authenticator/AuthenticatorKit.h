@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -73,7 +72,6 @@ typedef NS_ENUM(NSUInteger, ActionType) {
 
 /// Authenticator 
 - (void)handelURL:(NSURL *)url;
-- (void)handelURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts;
 
 
 @end

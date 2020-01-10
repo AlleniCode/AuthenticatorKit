@@ -412,10 +412,4 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
     }
 }
 
-- (void)handelURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts {
-    UIOpenURLContext *context = URLContexts.allObjects.firstObject;
-    NSURL *url = context.URL;
-    [self handelURL:url];
-}
-
 @end
