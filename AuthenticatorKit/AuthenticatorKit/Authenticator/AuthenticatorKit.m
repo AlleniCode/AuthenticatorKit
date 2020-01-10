@@ -122,7 +122,7 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
 + (void)openAuthenticatorWithType:(ActionType)type qrCode:(NSDictionary *)qrCode callback:(void (^)(BOOL success, NSError *error))callback {
     NSString *method = [AuthenticatorKit getMethodWithType:type];
     
-    NSDictionary *params = @{@"urlSchemes": @"authenticatordemo",
+    NSDictionary *params = @{@"urlSchemes": [AuthenticatorKit shareInstance].urlSchemes,
                              @"qrCode": qrCode,
                              @"method": method
     };
