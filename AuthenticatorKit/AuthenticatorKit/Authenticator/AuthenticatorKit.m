@@ -126,6 +126,7 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
                              @"qrCode": qrCode,
                              @"method": method
     };
+    NSLog(@"%@", params);
     
     NSError *error = nil;
     NSData *data = [NSJSONSerialization dataWithJSONObject:params options:kNilOptions error:&error];
