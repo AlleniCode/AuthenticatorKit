@@ -9,7 +9,6 @@
 #import "AuthenticatorKit.h"
 #import <AFNetworking/AFNetworking.h>
 
-NSNotificationName const ResultFromAuthenticatorNotification = @"ResultFromAuthenticatorNotification";
 
 typedef NS_OPTIONS(NSUInteger, RequestType) {
     RequestTypeGET,
@@ -46,27 +45,6 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
 - (void)setUrlSchemes:(NSString *)urlSchemes {
     if (urlSchemes && urlSchemes.length > 0) {
         _urlSchemes = urlSchemes;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resultFromAuthenticator:) name:ResultFromAuthenticatorNotification object:nil];
-    }
-}
-
-- (void)resultFromAuthenticator:(NSNotification *)notification {
-    NSLog(@"%@", notification.object);
-    NSDictionary *dic = (NSDictionary *)notification.object;
-    if (self.delegate && [self.delegate respondsToSelector:@selector(receiveResultFromAuthenticator:)]) {
-        NSString *method = dic[@"method"];
-        if ([method isEqualToString:@"OntProtocolLogin"]) {
-            [self getDecentralizedLoginStatusCallback:^(NSInteger status, NSError *error) {
-                NSMutableDictionary *mDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
-                [mDic setValue:@(status) forKey:@"loginStatus"];
-                [self.delegate receiveResultFromAuthenticator:mDic];
-            }];
-        } else if ([method isEqualToString:@"OntProtocolLoginByOwner"]) {
-            
-        } else {
-           [self.delegate receiveResultFromAuthenticator:dic];
-        }
     }
 }
 
@@ -391,8 +369,6 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
             id json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
             if (!error && [json isKindOfClass:[NSDictionary class]]) {
                 NSLog(@"%@", json);
-                //[[NSNotificationCenter defaultCenter] postNotificationName:@"ONTAuthCallbackNotification" object:json];
-                
                 NSDictionary *dic = (NSDictionary *)json;
                 if (self.delegate && [self.delegate respondsToSelector:@selector(receiveResultFromAuthenticator:)]) {
                     NSString *method = dic[@"method"];
@@ -403,7 +379,11 @@ typedef NS_OPTIONS(NSUInteger, RequestType) {
                             [self.delegate receiveResultFromAuthenticator:mDic];
                         }];
                     } else if ([method isEqualToString:@"OntProtocolLoginByOwner"]) {
-                        
+                        [self getCentralizedLoginStatusCallback:^(NSInteger status, NSError * _Nonnull error) {
+                            NSMutableDictionary *mDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                            [mDic setValue:@(status) forKey:@"loginStatus"];
+                            [self.delegate receiveResultFromAuthenticator:mDic];
+                        }];
                     } else {
                        [self.delegate receiveResultFromAuthenticator:dic];
                     }
