@@ -1,0 +1,38 @@
+PODS:
+  - AFNetworking (3.2.1):
+    - AFNetworking/NSURLSession (= 3.2.1)
+    - AFNetworking/Reachability (= 3.2.1)
+    - AFNetworking/Security (= 3.2.1)
+    - AFNetworking/Serialization (= 3.2.1)
+    - AFNetworking/UIKit (= 3.2.1)
+  - AFNetworking/NSURLSession (3.2.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.2.1)
+  - AFNetworking/Security (3.2.1)
+  - AFNetworking/Serialization (3.2.1)
+  - AFNetworking/UIKit (3.2.1):
+    - AFNetworking/NSURLSession
+  - AuthenticatorKit (0.1.2):
+    - AFNetworking (~> 3.2.1)
+  - MBProgressHUD (1.1.0)
+
+DEPENDENCIES:
+  - AuthenticatorKit
+  - MBProgressHUD
+
+SPEC REPOS:
+  trunk:
+    - AFNetworking
+    - AuthenticatorKit
+    - MBProgressHUD
+
+SPEC CHECKSUMS:
+  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  AuthenticatorKit: a50f567e1fdc0ce6b59bd59cbb42728d6edbc22a
+  MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+
+PODFILE CHECKSUM: a7eed644a99d2c42c53eaa3f11e588dd305b4658
+
+COCOAPODS: 1.8.4

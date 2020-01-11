@@ -1,0 +1,6 @@
+framework module AuthenticatorKit {
+  umbrella header "AuthenticatorKit-umbrella.h"
+
+  export *
+  module * { export * }
+}
