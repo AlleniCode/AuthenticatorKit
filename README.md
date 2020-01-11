@@ -15,6 +15,8 @@ And run `pod install`.
 
 Add a URL Schemes in your project targets.
 
+![image](https://github.com/AlleniCode/AuthenticatorKit/blob/master/Resources/QQ20200111-141537%402x.png)
+
 And add a key of  `LSApplicationQueriesSchemes` with value `ontologyauthenticator` in your Info.plist file.
 
 
