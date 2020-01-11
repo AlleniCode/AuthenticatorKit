@@ -7,6 +7,7 @@
 #### Step 1
 
 Add  `pod 'AuthenticatorKit', '0.1.2'` in your Podfile.
+
 And run `pod install`.
 
 
