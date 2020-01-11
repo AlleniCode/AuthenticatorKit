@@ -3,7 +3,6 @@
 
 ## Usage
 
-
 #### Step 1
 
 Add  `pod 'AuthenticatorKit', '0.1.2'` in your Podfile.
@@ -19,6 +18,8 @@ Add a URL Schemes in your project targets.
 
 And add a key of  `LSApplicationQueriesSchemes` with value `ontologyauthenticator` in your Info.plist file.
 
+![image](https://github.com/AlleniCode/AuthenticatorKit/blob/master/Resources/QQ20200111-141723%402x.png)
+
 
 #### Step 3
 
@@ -29,11 +30,13 @@ And add some code in the `application:didFinishLaunchingWithOptions` func:
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    [[AuthenticatorKit shareInstance] setUrlSchemes:@"AuthenticatorKitDemo"];
+    [[AuthenticatorKit shareInstance] setUrlSchemes:@"AuthenticatorKitDemo"]; // the url schemes set in step 2
     
     return YES;
 }
 ```
+
+![image](https://github.com/AlleniCode/AuthenticatorKit/blob/master/Resources/QQ20200111-142345%402x.png)
 
 
 #### Step 4
@@ -47,6 +50,8 @@ Add some cod in `AppDelegate.m` and `SceneDelegate.m`:
 }
 ```
 
+![image](https://github.com/AlleniCode/AuthenticatorKit/blob/master/Resources/QQ20200111-142743%402x.png)
+
 ```
 - (void)scene:(UIScene *)scene openURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts {
     UIOpenURLContext *context = URLContexts.allObjects.firstObject;
@@ -54,6 +59,7 @@ Add some cod in `AppDelegate.m` and `SceneDelegate.m`:
     [[AuthenticatorKit shareInstance] handelURL:url];
 }
 ```
+![image](https://github.com/AlleniCode/AuthenticatorKit/blob/master/Resources/QQ20200111-142814%402x.png)
 
 
 #### Step 5
@@ -70,10 +76,12 @@ Set the `AuthenticatorKitDelegate` where you want, and add the func `receiveResu
 }
 ```
 
+![image](https://github.com/AlleniCode/AuthenticatorKit/blob/master/Resources/QQ20200111-143020%402x.png)
+
 
 ## Examples
 
 See more usage in the example project of `AuthenticatorKitDemo`.
 
-
+[AuthenticatorKitDemo](https://github.com/AlleniCode/AuthenticatorKit/tree/master/AuthenticatorKitDemo)
 
